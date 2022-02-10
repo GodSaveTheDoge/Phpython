@@ -8,21 +8,23 @@
 import sys
 import os
 
-mods = [
-    [
-        f.split(".", 1)[0]
-        for f in os.listdir(spath)
-        if f.endswith(".py")
-        or (
-            os.path.isdir(f)
-            and os.path.exists(os.path.join(f, "__init__.p__init__.py"))
-        )
-    ]
+__all__ = [
+    f.split(".", 1)[0]
+    
     for spath in sys.path
     if os.path.exists(spath)
+
+    for f in os.listdir(spath)
+    if f.endswith(".py")
+    or (
+        os.path.isdir(os.path.join(spath,f))
+        and os.path.exists(os.path.join(os.path.join(spath, f), "__init__.py"))
+    )
 ]
-__all__ = [f for m in mods for f in m]
 __path__ = []
 
 def __getattr__(name):
-    return __import__(name)
+    try:
+        return __import__(name)
+    except Exception as e:
+        return e
